@@ -1,4 +1,5 @@
 """Тест-кейсы."""
+
 from fastapi import APIRouter, HTTPException
 from ..models import TestCase
 from ..database import test_cases_db, requirements_db, save_testcases
@@ -17,15 +18,14 @@ def create_testcase(testcase: TestCase) -> TestCase:
     """Создание тест-кейса."""
     if any(tc.id == testcase.id for tc in test_cases_db):
         raise HTTPException(
-            status_code=400,
-            detail=f"Тест-кейс с id={testcase.id} уже существует"
+            status_code=400, detail=f"Тест-кейс с id={testcase.id} уже существует"
         )
     requirement_ids = {r.id for r in requirements_db}
     if testcase.requirement_id not in requirement_ids:
         raise HTTPException(
             status_code=400,
             detail=f"Требование с id={testcase.requirement_id} не найдено. "
-            f"Допустимые id: {sorted(requirement_ids)}"
+            f"Допустимые id: {sorted(requirement_ids)}",
         )
     test_cases_db.append(testcase)
     save_testcases()
@@ -39,3 +39,14 @@ def get_testcase(testcase_id: int) -> TestCase:
         if test.id == testcase_id:
             return test
     raise HTTPException(status_code=400, detail="Тест-кейс не найден!")
+
+
+@router.delete("/{testcase_id}", status_code=204)
+def delete_testcase(testcase_id: int):
+    """Удалить тест-кейс по ID."""
+    for i, test in enumerate(test_cases_db):
+        if test.id == testcase_id:
+            test_cases_db.pop(i)
+            save_testcases()
+            return
+    raise HTTPException(status_code=404, detail="Тест-кейс не найден")

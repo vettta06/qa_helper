@@ -6,8 +6,19 @@ async function loadRequirements() {
         <div class="list-item">
             <strong>ID ${r.id}</strong>: ${r.text} (${r.req_type})<br>
             <a href="/requirement/${r.id}">Подробнее</a>
+            <button onclick="deleteReq(${r.id})">Удалить</button>
         </div>
     `).join('');
+}
+
+async function deleteReq(id) {
+    if (!confirm('Вы уверены, что хотите удалить требование ID ' + id + '?')) return;
+    const res = await fetch(`/requirements/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadRequirements();
+    } else {
+        alert('Ошибка удаления: ' + (await res.json()).detail);
+    }
 }
 document.getElementById('reqForm').addEventListener('submit', async (e) => {
     e.preventDefault();

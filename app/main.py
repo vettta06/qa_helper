@@ -1,4 +1,5 @@
 """Точка входа в приложение."""
+
 from fastapi import FastAPI
 from .api import requirements, testcases, bugs
 from fastapi.staticfiles import StaticFiles
@@ -9,8 +10,7 @@ BASE_DIR = Path(__file__).parent.parent
 
 app = FastAPI(
     title="QA helper API",
-    description="Система для управления требованиями, "
-    "тест кецсами и баг-репортами"
+    description="Система для управления требованиями, " "тест кецсами и баг-репортами",
 )
 
 app.include_router(requirements.router)

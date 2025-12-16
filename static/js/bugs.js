@@ -5,9 +5,20 @@ async function loadBugs() {
     container.innerHTML = bugs.map(b => `
         <div class="list-item ${b.severity}">
             <strong>${b.title}</strong> (ID: ${b.id})<br>
-            <a href="/bug/${b.id}">Подробнее</a>
+            <a href="/bug/${b.id}">Подробнее</a> |
+            <button onclick="deleteBug(${b.id})">Удалить</button>
         </div>
     `).join('');
+}
+async function deleteBug(id) {
+    if (!confirm('Вы уверены, что хотите удалить баг ID ' + id + '?')) return;
+    
+    const res = await fetch(`/bugs/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadBugs();
+    } else {
+        alert('Ошибка удаления: ' + (await res.json()).detail);
+    }
 }
 document.getElementById('bugForm').addEventListener('submit', async (e) => {
     e.preventDefault();

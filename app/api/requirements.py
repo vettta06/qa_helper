@@ -1,4 +1,5 @@
 """Требования."""
+
 from fastapi import APIRouter, HTTPException
 from ..models import Requirement
 from ..database import requirements_db, save_requirements
@@ -18,9 +19,8 @@ def create_requirement(req: Requirement) -> Requirement:
     for r in requirements_db:
         if r.id == req.id:
             raise HTTPException(
-                status_code=400,
-                detail=f"Требование с id={req.id} уже существует"
-                )
+                status_code=400, detail=f"Требование с id={req.id} уже существует"
+            )
     requirements_db.append(req)
     save_requirements()
     return req
@@ -33,3 +33,14 @@ def get_req(req_id: int) -> Requirement:
         if req.id == req_id:
             return req
     raise HTTPException(status_code=400, detail="Требование не найдено!")
+
+
+@router.delete("/{req_id}", status_code=204)
+def delete_req(req_id: int):
+    """Удалить требование по ID."""
+    for i, req in enumerate(requirements_db):
+        if req.id == req_id:
+            requirements_db.pop(i)
+            save_requirements()
+            return
+    raise HTTPException(status_code=404, detail="Требование не найдено")

@@ -2,12 +2,23 @@ async function loadTestCases() {
     const res = await fetch('/testcases/');
     const tcs = await res.json();
     const container = document.getElementById('listContainer');
-    container.innerHTML = tests.map(tc => `
+    container.innerHTML = tcs.map(tc => `
         <div class="list-item">
             <strong>ID ${tc.id}</strong>: ${tc.description}<br>
             <a href="/testcase/${tc.id}">Подробнее</a>
+            <button onclick="deleteTestCase(${tc.id})">Удалить</button>
         </div>
     `).join('');
+}
+
+async function deleteTestCase(id) {
+    if (!confirm('Вы уверены, что хотите удалить тест-кейс ID ' + id + '?')) return;
+    const res = await fetch(`/testcases/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadTestCases();
+    } else {
+        alert('Ошибка удаления: ' + (await res.json()).detail);
+    }
 }
 document.getElementById('tcForm').addEventListener('submit', async (e) => {
     e.preventDefault();

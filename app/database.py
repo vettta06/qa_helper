@@ -1,4 +1,5 @@
 """База данных."""
+
 import json
 from pathlib import Path
 from .models import Requirement, TestCase, BugReport
@@ -23,12 +24,7 @@ def _load_json(path: Path, model_cls):
 def _save_json(path: Path, data: list):
     """Сохраняет список объектов в JSON-файл."""
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(
-            [item.model_dump() for item in data],
-            f,
-            ensure_ascii=False,
-            indent=2
-        )
+        json.dump([item.model_dump() for item in data], f, ensure_ascii=False, indent=2)
 
 
 # Загрузка данных

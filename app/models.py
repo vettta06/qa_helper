@@ -1,10 +1,12 @@
 """Модели данных."""
+
 from pydantic import BaseModel
 from enum import Enum
 
 
 class Severity(str, Enum):
     """Уровни важности проблемы."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -13,6 +15,7 @@ class Severity(str, Enum):
 
 class Requirement(BaseModel):
     """Требования к устройству."""
+
     id: int
     text: str
     req_type: str  # functional or nonfunctional
@@ -20,6 +23,7 @@ class Requirement(BaseModel):
 
 class TestCase(BaseModel):
     """Тестовые кейсы."""
+
     id: int
     requirement_id: int
     description: str
@@ -29,6 +33,7 @@ class TestCase(BaseModel):
 
 class BugReport(BaseModel):
     """Создание репортов."""
+
     id: int
     title: str
     severity: Severity
