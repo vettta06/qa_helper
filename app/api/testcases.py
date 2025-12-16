@@ -30,3 +30,12 @@ def create_testcase(testcase: TestCase) -> TestCase:
     test_cases_db.append(testcase)
     save_testcases()
     return testcase
+
+
+@router.get("/{testcase_id}", response_model=TestCase)
+def get_testcase(testcase_id: int) -> TestCase:
+    """Получение тест-кейса по id."""
+    for test in test_cases_db:
+        if test.id == testcase_id:
+            return test
+    raise HTTPException(status_code=400, detail="Тест-кейс не найден!")

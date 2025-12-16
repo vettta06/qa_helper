@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали тест-кейса</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Детали тест-кейса #<span id="testcaseId"></span></h1>
+    <div id="testcaseDetails"></div>
+    <p><a href="/testcases">← Назад к списку</a></p>
+
+    <script>
+        // Получаем ID из URL
+        const pathParts = window.location.pathname.split('/');
+        const testcaseId = parseInt(pathParts[pathParts.length - 1]);
+        document.getElementById('testcaseId').textContent = testcaseId;
+
+        // Загружаем данные тест-кейса
+        fetch(`/testcases/${testcaseId}`)
+            .then(res => {
+                if (!res.ok) {
+                    document.getElementById('testcaseDetails').innerHTML = '<p style="color:red">Тест-кейс не найден</p>';
+                    return;
+                }
+                return res.json();
+            })
+            .then(testcase => {
+                if (!testcase) return;
+                document.getElementById('testcaseDetails').innerHTML = `
+                    <h2>${testcase.description}</h2>
+                    <p><strong>ID требования:</strong> ${testcase.requirement_id}</p>
+                    <p><strong>Ожидаемый результат:</strong> ${testcase.expected_result}</p>
+                    <p><strong>Шаги:</strong></p>
+                    <ul>${testcase.steps.map(step => `<li>${step}</li>`).join('')}</ul>
+                `;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('testcaseDetails').innerHTML = '<p style="color:red">Ошибка загрузки</p>';
+            });
+    </script>
+</body>
+</html>

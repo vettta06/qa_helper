@@ -24,3 +24,12 @@ def create_requirement(req: Requirement) -> Requirement:
     requirements_db.append(req)
     save_requirements()
     return req
+
+
+@router.get("/{req_id}", response_model=Requirement)
+def get_req(req_id: int) -> Requirement:
+    """Получение требования по id."""
+    for req in requirements_db:
+        if req.id == req_id:
+            return req
+    raise HTTPException(status_code=400, detail="Требование не найдено!")

@@ -20,6 +20,7 @@ app.include_router(bugs.router)
 STATIC_DIR = Path(__file__).parent.parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+
 @app.get("/", response_class=HTMLResponse)
 def home():
     """Главная страница."""
@@ -42,3 +43,21 @@ def testcases_page():
 def bugs_page():
     """Страница с баг-репортами."""
     return (STATIC_DIR / "bugs.html").read_text(encoding="utf-8")
+
+
+@app.get("/bug/{bug_id}", response_class=HTMLResponse)
+def bug_detail_page(bug_id: int):
+    """Страница деталей бага."""
+    return (STATIC_DIR / "bug_detail.html").read_text(encoding="utf-8")
+
+
+@app.get("/testcase/{testcase_id}", response_class=HTMLResponse)
+def testcase_detail_page(testcase_id: int):
+    """Страница деталей тест-кейса."""
+    return (STATIC_DIR / "testcase_detail.html").read_text(encoding="utf-8")
+
+
+@app.get("/requirement/{req_id}", response_class=HTMLResponse)
+def requirement_detail_page(req_id: int):
+    """Страница деталей требования."""
+    return (STATIC_DIR / "requirement_detail.html").read_text(encoding="utf-8")

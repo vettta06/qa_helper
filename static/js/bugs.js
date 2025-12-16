@@ -4,8 +4,8 @@ async function loadBugs() {
     const container = document.getElementById('listContainer');
     container.innerHTML = bugs.map(b => `
         <div class="list-item ${b.severity}">
-            <strong>${b.title}</strong> (ID: ${b.id}, severity: ${b.severity})<br>
-            Окружение: ${b.environment}
+            <strong>${b.title}</strong> (ID: ${b.id})<br>
+            <a href="/bug/${b.id}">Подробнее</a>
         </div>
     `).join('');
 }

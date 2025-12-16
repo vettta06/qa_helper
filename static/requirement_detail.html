@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали требования</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Детали требования #<span id="reqId"></span></h1>
+    <div id="requirementDetails"></div>
+    <p><a href="/requirements">← Назад к списку</a></p>
+
+    <script>
+        // Получаем ID из URL
+        const pathParts = window.location.pathname.split('/');
+        const reqId = parseInt(pathParts[pathParts.length - 1]);
+        document.getElementById('reqId').textContent = reqId;
+
+        // Загружаем данные требования
+        fetch(`/requirements/${reqId}`)
+            .then(res => {
+                if (!res.ok) {
+                    document.getElementById('requirementDetails').innerHTML = '<p style="color:red">Требование не найдено</p>';
+                    return;
+                }
+                return res.json();
+            })
+            .then(requirement => {
+                if (!requirement) return;
+                document.getElementById('requirementDetails').innerHTML = `
+                    <p><strong>Текст:</strong> ${requirement.text}</p>
+                    <p><strong>Тип:</strong> ${requirement.req_type}</p>
+                    <p><strong>Тип устройства:</strong> ${requirement.device_type}</p>
+                `;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('requirementDetails').innerHTML = '<p style="color:red">Ошибка загрузки</p>';
+            });
+    </script>
+</body>
+</html>

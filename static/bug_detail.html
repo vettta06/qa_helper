@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали бага</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Детали бага #<span id="bugId"></span></h1>
+    <div id="bugDetails"></div>
+    <p><a href="/bugs">← Назад к списку</a></p>
+
+    <script>
+        // Получаем ID из URL: /bug/5 → 5
+        const urlParams = new URLSearchParams(window.location.search);
+        const pathParts = window.location.pathname.split('/');
+        const bugId = parseInt(pathParts[pathParts.length - 1]);
+
+        document.getElementById('bugId').textContent = bugId;
+
+        // Загружаем данные
+        fetch(`/bugs/${bugId}`)
+            .then(res => {
+                if (!res.ok) {
+                    document.getElementById('bugDetails').innerHTML = '<p style="color:red">Баг не найден</p>';
+                    return;
+                }
+                return res.json();
+            })
+            .then(bug => {
+                if (!bug) return;
+                document.getElementById('bugDetails').innerHTML = `
+                    <h2>${bug.title}</h2>
+                    <p><strong>Уровень серьёзности:</strong> ${bug.severity}</p>
+                    <p><strong>Окружение:</strong> ${bug.environment}</p>
+                    <p><strong>Фактический результат:</strong> ${bug.actual_result}</p>
+                    <p><strong>Ожидаемый результат:</strong> ${bug.expected_result}</p>
+                    <p><strong>Шаги воспроизведения:</strong></p>
+                    <ul>${bug.steps_to_reproduce.map(step => `<li>${step}</li>`).join('')}</ul>
+                    ${bug.test_case_id ? `<p><strong>Связан с тест-кейсом ID:</strong> ${bug.test_case_id}</p>` : ''}
+                `;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('bugDetails').innerHTML = '<p style="color:red">Ошибка загрузки</p>';
+            });
+    </script>
+</body>
+</html>

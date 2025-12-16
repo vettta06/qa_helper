@@ -3,8 +3,9 @@ async function loadRequirements() {
     const reqs = await res.json();
     const container = document.getElementById('listContainer');
     container.innerHTML = reqs.map(r => `
-        <div style="margin-bottom:12px; padding:10px; border-left:3px solid #3498db; background:#f8f9fa">
-            <strong>ID ${r.id}</strong>: ${r.text} (${r.req_type})
+        <div class="list-item">
+            <strong>ID ${r.id}</strong>: ${r.text} (${r.req_type})<br>
+            <a href="/requirement/${r.id}">Подробнее</a>
         </div>
     `).join('');
 }

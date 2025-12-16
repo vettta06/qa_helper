@@ -31,3 +31,12 @@ def create_bug(bug: BugReport) -> BugReport:
     bug_reports_db.append(bug)
     save_bugs()
     return bug
+
+
+@router.get("/{bug_id}", response_model=BugReport)
+def get_bug(bug_id: int) -> BugReport:
+    """Получить баг-репорт по id."""
+    for bug in bug_reports_db:
+        if bug.id == bug_id:
+            return bug
+    raise HTTPException(status_code=400, detail="Баг-репорт не найден!")

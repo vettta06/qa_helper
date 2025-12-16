@@ -2,10 +2,10 @@ async function loadTestCases() {
     const res = await fetch('/testcases/');
     const tcs = await res.json();
     const container = document.getElementById('listContainer');
-    container.innerHTML = tcs.map(tc => `
+    container.innerHTML = tests.map(tc => `
         <div class="list-item">
-            <strong>ID ${tc.id}</strong>: ${tc.description} 
-            (требование ID: ${tc.requirement_id})
+            <strong>ID ${tc.id}</strong>: ${tc.description}<br>
+            <a href="/testcase/${tc.id}">Подробнее</a>
         </div>
     `).join('');
 }
