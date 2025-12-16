@@ -3,6 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from ..models import TestCase
 from ..database import test_cases_db, requirements_db, save_testcases
+from ..utils import export_to_csv
 
 router = APIRouter(prefix="/testcases", tags=["testcases"])
 
@@ -18,7 +19,8 @@ def create_testcase(testcase: TestCase) -> TestCase:
     """Создание тест-кейса."""
     if any(tc.id == testcase.id for tc in test_cases_db):
         raise HTTPException(
-            status_code=400, detail=f"Тест-кейс с id={testcase.id} уже существует"
+            status_code=400,
+            detail=f"Тест-кейс с id={testcase.id} уже существует"
         )
     requirement_ids = {r.id for r in requirements_db}
     if testcase.requirement_id not in requirement_ids:
@@ -30,6 +32,23 @@ def create_testcase(testcase: TestCase) -> TestCase:
     test_cases_db.append(testcase)
     save_testcases()
     return testcase
+
+
+@router.get("/export.csv")
+def export_testcases_csv():
+    """Экспорт в csv."""
+    headers = [
+        ("id", "ID"),
+        ("requirement_id", "ID требования"),
+        ("description", "Описание"),
+        ("steps", "Шаги"),
+        ("expected_result", "Ожидаемый результат")
+    ]
+    data = [
+        {**tc.model_dump(), "steps": "; ".join(tc.steps)}
+        for tc in test_cases_db
+    ]
+    return export_to_csv(data, headers, "testcases.csv")
 
 
 @router.get("/{testcase_id}", response_model=TestCase)

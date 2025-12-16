@@ -11,12 +11,10 @@
     <p><a href="/testcases">← Назад к списку</a></p>
 
     <script>
-        // Получаем ID из URL
         const pathParts = window.location.pathname.split('/');
         const testcaseId = parseInt(pathParts[pathParts.length - 1]);
         document.getElementById('testcaseId').textContent = testcaseId;
 
-        // Загружаем данные тест-кейса
         fetch(`/testcases/${testcaseId}`)
             .then(res => {
                 if (!res.ok) {

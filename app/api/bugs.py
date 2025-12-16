@@ -1,8 +1,10 @@
 """Баг-репорты."""
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from ..models import BugReport
 from ..database import bug_reports_db, test_cases_db, save_bugs
+from ..utils import export_to_csv
 
 router = APIRouter(prefix="/bugs", tags=["bugs"])
 
@@ -20,16 +22,33 @@ def create_bug(bug: BugReport) -> BugReport:
     if bug.test_case_id:
         if bug.test_case_id not in existing_test_case_ids:
             raise HTTPException(
-                status_code=400, detail=f"Тест-кейс с id={bug.test_case_id} не найден."
+                status_code=400,
+                detail=f"Тест-кейс с id={bug.test_case_id} не найден."
             )
     for b in bug_reports_db:
         if b.id == bug.id:
             raise HTTPException(
-                status_code=400, detail=f"Баг-репорт с id={bug.id} уже существует"
+                status_code=400,
+                detail=f"Баг-репорт с id={bug.id} уже существует"
             )
     bug_reports_db.append(bug)
     save_bugs()
     return bug
+
+
+@router.get("/export.csv")
+def export_bugs_csv() -> StreamingResponse:
+    """Экспорт в csv."""
+    headers = [
+        ("id", "ID"),
+        ("title", "Заголовок"),
+        ("severity", "Серьёзность"),
+        ("environment", "Окружение"),
+        ("actual_result", "Фактический результат"),
+        ("expected_result", "Ожидаемый результат"),
+        ("test_case_id", "ID тест-кейса")
+    ]
+    return export_to_csv(bug_reports_db, headers, "bugs.csv")
 
 
 @router.get("/{bug_id}", response_model=BugReport)

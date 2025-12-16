@@ -1,8 +1,10 @@
 """Требования."""
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from ..models import Requirement
 from ..database import requirements_db, save_requirements
+from ..utils import export_to_csv
 
 router = APIRouter(prefix="/requirements", tags=["requirements"])
 
@@ -19,11 +21,24 @@ def create_requirement(req: Requirement) -> Requirement:
     for r in requirements_db:
         if r.id == req.id:
             raise HTTPException(
-                status_code=400, detail=f"Требование с id={req.id} уже существует"
+                status_code=400,
+                detail=f"Требование с id={req.id} уже существует"
             )
     requirements_db.append(req)
     save_requirements()
     return req
+
+
+@router.get("/export.csv")
+def export_requirements_csv() -> StreamingResponse:
+    """Экспорт в csv."""
+    headers = [
+        ("id", "ID"),
+        ("text", "Текст"),
+        ("req_type", "Тип"),
+        ("device_type", "Тип устройства")
+    ]
+    return export_to_csv(requirements_db, headers, "requirements.csv")
 
 
 @router.get("/{req_id}", response_model=Requirement)

@@ -11,14 +11,12 @@
     <p><a href="/bugs">← Назад к списку</a></p>
 
     <script>
-        // Получаем ID из URL: /bug/5 → 5
         const urlParams = new URLSearchParams(window.location.search);
         const pathParts = window.location.pathname.split('/');
         const bugId = parseInt(pathParts[pathParts.length - 1]);
 
         document.getElementById('bugId').textContent = bugId;
 
-        // Загружаем данные
         fetch(`/bugs/${bugId}`)
             .then(res => {
                 if (!res.ok) {

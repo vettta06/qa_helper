@@ -11,12 +11,10 @@
     <p><a href="/requirements">← Назад к списку</a></p>
 
     <script>
-        // Получаем ID из URL
         const pathParts = window.location.pathname.split('/');
         const reqId = parseInt(pathParts[pathParts.length - 1]);
         document.getElementById('reqId').textContent = reqId;
 
-        // Загружаем данные требования
         fetch(`/requirements/${reqId}`)
             .then(res => {
                 if (!res.ok) {
