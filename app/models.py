@@ -24,7 +24,7 @@ class TestCase(BaseModel):
     requirement_id: int
     description: str
     steps: list[str]
-    expected_res: str
+    expected_result: str
 
 
 class BugReport(BaseModel):
@@ -32,8 +32,8 @@ class BugReport(BaseModel):
     id: int
     title: str
     severity: Severity
-    steps_to_reduce: list[str]
-    actual_res: str
-    expected_res: str
+    steps_to_reproduce: list[str]
+    actual_result: str
+    expected_result: str
     environment: str
     test_case_id: int | None = None

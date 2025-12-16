@@ -1,7 +1,7 @@
 """Баг-репорты."""
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from ..models import BugReport
-from ..database import bug_reports_db, test_cases_db
+from ..database import bug_reports_db, test_cases_db, save_bugs
 
 router = APIRouter(prefix="/bugs", tags=["bugs"])
 
@@ -18,9 +18,16 @@ def create_bug(bug: BugReport) -> BugReport:
     existing_test_case_ids = {tc.id for tc in test_cases_db}
     if bug.test_case_id:
         if bug.test_case_id not in existing_test_case_ids:
-            raise ValueError(f"Тест-кейс с id={bug.test_case_id} не найден.")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Тест-кейс с id={bug.test_case_id} не найден."
+                )
     for b in bug_reports_db:
         if b.id == bug.id:
-            raise ValueError(f"Баг-репорт с id={bug.id} уже существует")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Баг-репорт с id={bug.id} уже существует"
+                )
     bug_reports_db.append(bug)
+    save_bugs()
     return bug

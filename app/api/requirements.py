@@ -1,7 +1,7 @@
 """Требования."""
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from ..models import Requirement
-from ..database import requirements_db
+from ..database import requirements_db, save_requirements
 
 router = APIRouter(prefix="/requirements", tags=["requirements"])
 
@@ -17,6 +17,10 @@ def create_requirement(req: Requirement) -> Requirement:
     """Создание требования."""
     for r in requirements_db:
         if r.id == req.id:
-            raise ValueError(f"Требование с id={req.id} уже существует")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Требование с id={req.id} уже существует"
+                )
     requirements_db.append(req)
+    save_requirements()
     return req
