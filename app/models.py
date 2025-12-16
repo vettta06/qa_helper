@@ -19,6 +19,7 @@ class Requirement(BaseModel):
     id: int
     text: str
     req_type: str  # functional or nonfunctional
+    device_type: str
 
 
 class TestCase(BaseModel):

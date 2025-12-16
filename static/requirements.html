@@ -9,7 +9,15 @@
     <h1>Создать требование</h1>
     <form id="reqForm">
         <label>ID:<input name="id" type="number" required></label>
-        <label>Описание:<textarea name="text"></textarea></label>
+        <label>Тип устройства:
+            <select name="device_type" required>
+                <option value="refrigerator">Холодильник</option>
+                <option value="washing_machine">Стиральная машина</option>
+                <option value="oven">Духовка</option>
+                <option value="microwave">Микроволновка</option>
+            </select>
+        </label>
+        <label>Описание:<textarea name="text" required></textarea></label>
         <select name="req_type">
             <option value="functional">Функциональное</option>
             <option value="non_functional">Нефункциональное</option>

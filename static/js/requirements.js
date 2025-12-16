@@ -27,7 +27,8 @@ document.getElementById('reqForm').addEventListener('submit', async (e) => {
     const req = {
         id: parseInt(form.id.value),
         text: form.text.value,
-        req_type: form.req_type.value
+        req_type: form.req_type.value,
+        device_type: form.device_type.value
     };
 
     const res = await fetch('/requirements/', {
