@@ -19,8 +19,7 @@ def create_testcase(testcase: TestCase) -> TestCase:
     """Создание тест-кейса."""
     if any(tc.id == testcase.id for tc in test_cases_db):
         raise HTTPException(
-            status_code=400,
-            detail=f"Тест-кейс с id={testcase.id} уже существует"
+            status_code=400, detail=f"Тест-кейс с id={testcase.id} уже существует"
         )
     requirement_ids = {r.id for r in requirements_db}
     if testcase.requirement_id not in requirement_ids:
@@ -42,12 +41,9 @@ def export_testcases_csv():
         ("requirement_id", "ID требования"),
         ("description", "Описание"),
         ("steps", "Шаги"),
-        ("expected_result", "Ожидаемый результат")
+        ("expected_result", "Ожидаемый результат"),
     ]
-    data = [
-        {**tc.model_dump(), "steps": "; ".join(tc.steps)}
-        for tc in test_cases_db
-    ]
+    data = [{**tc.model_dump(), "steps": "; ".join(tc.steps)} for tc in test_cases_db]
     return export_to_csv(data, headers, "testcases.csv")
 
 

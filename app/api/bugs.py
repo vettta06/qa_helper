@@ -22,14 +22,12 @@ def create_bug(bug: BugReport) -> BugReport:
     if bug.test_case_id:
         if bug.test_case_id not in existing_test_case_ids:
             raise HTTPException(
-                status_code=400,
-                detail=f"Тест-кейс с id={bug.test_case_id} не найден."
+                status_code=400, detail=f"Тест-кейс с id={bug.test_case_id} не найден."
             )
     for b in bug_reports_db:
         if b.id == bug.id:
             raise HTTPException(
-                status_code=400,
-                detail=f"Баг-репорт с id={bug.id} уже существует"
+                status_code=400, detail=f"Баг-репорт с id={bug.id} уже существует"
             )
     bug_reports_db.append(bug)
     save_bugs()
@@ -46,7 +44,7 @@ def export_bugs_csv() -> StreamingResponse:
         ("environment", "Окружение"),
         ("actual_result", "Фактический результат"),
         ("expected_result", "Ожидаемый результат"),
-        ("test_case_id", "ID тест-кейса")
+        ("test_case_id", "ID тест-кейса"),
     ]
     return export_to_csv(bug_reports_db, headers, "bugs.csv")
 

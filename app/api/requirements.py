@@ -21,8 +21,7 @@ def create_requirement(req: Requirement) -> Requirement:
     for r in requirements_db:
         if r.id == req.id:
             raise HTTPException(
-                status_code=400,
-                detail=f"Требование с id={req.id} уже существует"
+                status_code=400, detail=f"Требование с id={req.id} уже существует"
             )
     requirements_db.append(req)
     save_requirements()
@@ -36,7 +35,7 @@ def export_requirements_csv() -> StreamingResponse:
         ("id", "ID"),
         ("text", "Текст"),
         ("req_type", "Тип"),
-        ("device_type", "Тип устройства")
+        ("device_type", "Тип устройства"),
     ]
     return export_to_csv(requirements_db, headers, "requirements.csv")
 
