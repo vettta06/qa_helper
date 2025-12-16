@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Баг-репорты</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Создать баг-репорт</h1>
+    <form id="bugForm">
+        <label>ID:
+            <input name="id" type="number" required>
+        </label>
+        <label>Заголовок:
+            <input name="title" required>
+        </label>
+        <label>Серьёзность:
+            <select name="severity" required>
+                <option value="low">Низкая</option>
+                <option value="medium">Средняя</option>
+                <option value="high">Высокая</option>
+                <option value="critical">Критическая</option>
+            </select>
+        </label>
+        <label>Шаги воспроизведения (по одному на строку):
+            <textarea name="steps_to_reproduce" placeholder="Шаг 1&#10;Шаг 2" required></textarea>
+        </label>
+        <label>Фактический результат:<input name="actual_result" required></label>
+        <label>Ожидаемый результат:<input name="expected_result" required></label>
+        <label>Окружение:<input name="environment" required></label>
+        <label>ID тест-кейса (опционально):<input name="test_case_id" type="number"></label>
+        <button type="submit">Отправить баг</button>
+    </form>
+
+    <h2>Список:</h2>
+    <div id="listContainer"></div>
+
+    <p><a href="/static/index.html">← Назад</a></p>
+    <script src="/static/js/bugs.js"></script>
+</body>
+</html>

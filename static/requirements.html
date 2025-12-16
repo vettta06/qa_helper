@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Требования</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Создать требование</h1>
+    <form id="reqForm">
+        <label>ID:<input name="id" type="number" required></label>
+        <label>Описание:<textarea name="text"></textarea></label>
+        <select name="req_type">
+            <option value="functional">Функциональное</option>
+            <option value="non_functional">Нефункциональное</option>
+        </select>
+        <button type="submit">Отправить требование</button>
+    </form>
+    <div id="message"></div>
+
+    <h2>Список:</h2>
+    <div id="listContainer"></div>
+
+    <p><a href="/static/index.html">← Назад</a></p>
+    <script src="/static/js/requirements.js"></script>
+</body>
+</html>

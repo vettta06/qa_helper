@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест-кейсы</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Создать тест-кейс</h1>
+    <form id="tcForm">
+        <label>ID тест-кейса: <input name="id" type="number" required></label>
+        <label>ID требования: <input name="requirement_id" type="number" required></label>
+        <label>Описание: <input name="description" required></label>
+        <label>Шаги (по строке): <textarea name="steps" required></textarea></label>
+        <label>Ожидаемый результат: <input name="expected_result" required></label>
+        <button type="submit">Создать тест-кейс</button>
+    </form>
+    <div id="message"></div>
+
+    <h2>Список:</h2>
+    <div id="listContainer"></div>
+
+    <p><a href="/static/index.html">← Назад</a></p>
+    <script src="/static/js/testcases.js"></script>
+</body>
+</html>
