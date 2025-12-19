@@ -15,7 +15,7 @@ async function deleteBug(id) {
     
     const res = await fetch(`/bugs/${id}`, { method: 'DELETE' });
     if (res.ok) {
-        loadBugs();
+        await loadBugs();
     } else {
         alert('Ошибка удаления: ' + (await res.json()).detail);
     }
@@ -50,7 +50,7 @@ document.getElementById('bugForm').addEventListener('submit', async (e) => {
     if (response.ok) {
         messageEl.innerHTML = '<p style="color:green">✅ Баг-репорт успешно добавлен!</p>';
         form.reset();
-        loadBugs();
+        await loadBugs();
     } else {
         const error = await response.json();
         const msg = error.detail?.[0]?.msg || 'Неизвестная ошибка';

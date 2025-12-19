@@ -2,7 +2,13 @@
 
 from fastapi import APIRouter, HTTPException
 from ..models import TestCase
-from ..database import test_cases_db, requirements_db, save_testcases
+from ..database import (
+    get_all_testcases,
+    get_testcase_by_id,
+    create_testcase as db_create_testcase,
+    delete_testcase as db_delete_testcase,
+    get_all_requirement_ids,
+)
 from ..utils import export_to_csv
 
 router = APIRouter(prefix="/testcases", tags=["testcases"])
@@ -11,26 +17,24 @@ router = APIRouter(prefix="/testcases", tags=["testcases"])
 @router.get("/", response_model=list[TestCase])
 def get_testcases() -> list[TestCase]:
     """Получение тест-кейсов."""
-    return test_cases_db
+    return get_all_testcases()
 
 
 @router.post("/", response_model=TestCase)
 def create_testcase(testcase: TestCase) -> TestCase:
     """Создание тест-кейса."""
-    if any(tc.id == testcase.id for tc in test_cases_db):
+    if get_testcase_by_id(testcase.id):
         raise HTTPException(
             status_code=400, detail=f"Тест-кейс с id={testcase.id} уже существует"
         )
-    requirement_ids = {r.id for r in requirements_db}
+    requirement_ids = get_all_requirement_ids()
     if testcase.requirement_id not in requirement_ids:
         raise HTTPException(
             status_code=400,
             detail=f"Требование с id={testcase.requirement_id} не найдено. "
             f"Допустимые id: {sorted(requirement_ids)}",
         )
-    test_cases_db.append(testcase)
-    save_testcases()
-    return testcase
+    return db_create_testcase(testcase)
 
 
 @router.get("/export.csv")
@@ -43,25 +47,23 @@ def export_testcases_csv():
         ("steps", "Шаги"),
         ("expected_result", "Ожидаемый результат"),
     ]
-    data = [{**tc.model_dump(), "steps": "; ".join(tc.steps)} for tc in test_cases_db]
+    data = [
+        {**tc.model_dump(), "steps": "; ".join(tc.steps)} for tc in get_all_testcases()
+    ]
     return export_to_csv(data, headers, "testcases.csv")
 
 
 @router.get("/{testcase_id}", response_model=TestCase)
 def get_testcase(testcase_id: int) -> TestCase:
     """Получение тест-кейса по id."""
-    for test in test_cases_db:
-        if test.id == testcase_id:
-            return test
-    raise HTTPException(status_code=400, detail="Тест-кейс не найден!")
+    tc = get_testcase_by_id(testcase_id)
+    if not tc:
+        raise HTTPException(status_code=404, detail="Тест-кейс не найден!")
+    return tc
 
 
 @router.delete("/{testcase_id}", status_code=204)
 def delete_testcase(testcase_id: int):
     """Удалить тест-кейс по ID."""
-    for i, test in enumerate(test_cases_db):
-        if test.id == testcase_id:
-            test_cases_db.pop(i)
-            save_testcases()
-            return
-    raise HTTPException(status_code=404, detail="Тест-кейс не найден")
+    if not db_delete_testcase(testcase_id):
+        raise HTTPException(status_code=404, detail="Тест-кейс не найден")
