@@ -42,3 +42,8 @@ uvicorn app.main:app --reload
 ### Доступ
 - Веб-интерфейс: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+
+### Стек
+- Fast API
+- PostgreSQL
+- html + css + js
